@@ -38,8 +38,7 @@ def apply_cors_header(response):
     response.headers['Access-Control-Allow-Methods'] = 'GET,POST,DELETE,PATCH'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
-
-@app.route('/todo-list/<list_id>', methods=['GET', 'DELETE'])
+@app.route('/todo-list/<list_id>', methods=['GET', 'DELETE', 'POST'])
 def handle_list(list_id):
     list_item = next((l for l in todo_lists if l['id'] == list_id), None)
     if not list_item:
@@ -51,19 +50,20 @@ def handle_list(list_id):
         print('Deleting todo list...')
         todo_lists.remove(list_item)
         return jsonify({'message': 'List deleted successfully'}), 204
-
-@app.route('/todo-list', methods=['POST'])
-def add_new_list():
-    new_list = request.get_json(force=True)
-    if not new_list or 'name' not in new_list:
-        abort(406)
-    new_list['id'] = str(uuid.uuid4())
-    todo_lists.append(new_list)
-    return jsonify(new_list), 201
-
-@app.route('/lists', methods=['GET'])
-def get_all_lists():
-    return jsonify(todo_lists)
+    elif request.method == 'POST':
+        data = request.get_json(force=True)
+        if not data or 'name' not in data or 'description' not in data:
+            abort(406)
+        new_entry = {
+            'id': str(uuid.uuid4()),
+            'name': data['name'],
+            'description': data['description'],
+            'user_id': str(uuid.uuid4()),
+            'list_id': list_id
+        }
+        todos.append(new_entry)
+        return jsonify(new_entry), 201
+    
 
 if __name__ == '__main__':
     app.debug = True
