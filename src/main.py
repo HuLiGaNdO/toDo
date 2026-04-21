@@ -39,7 +39,7 @@ def apply_cors_header(response):
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
-@app.route('/todo-list/<list_id>', methods=['GET', 'DELETE'])
+@app.route('/todo-list/<list_id>', methods=['GET', 'DELETE', 'POST'])  # ← Step 2: добавлен POST
 def handle_list(list_id):
     list_item = next((l for l in todo_lists if l['id'] == list_id), None)
     if not list_item:
@@ -51,6 +51,19 @@ def handle_list(list_id):
         print('Deleting todo list...')
         todo_lists.remove(list_item)
         return jsonify({'message': 'List deleted successfully'}), 204
+    elif request.method == 'POST':                                      # ← Step 2
+        data = request.get_json(force=True)
+        if not data or 'name' not in data or 'description' not in data:
+            abort(406)
+        new_entry = {
+            'id': str(uuid.uuid4()),
+            'name': data['name'],
+            'description': data['description'],
+            'user_id': str(uuid.uuid4()),
+            'list_id': list_id
+        }
+        todos.append(new_entry)
+        return jsonify(new_entry), 201
 
 @app.route('/todo-list', methods=['POST'])
 def add_new_list():
@@ -64,6 +77,24 @@ def add_new_list():
 @app.route('/lists', methods=['GET'])
 def get_all_lists():
     return jsonify(todo_lists)
+
+@app.route('/entry/<entry_id>', methods=['PATCH', 'DELETE'])            # ← Step 3
+def handle_entry(entry_id):
+    entry = next((e for e in todos if e['id'] == entry_id), None)
+    if not entry:
+        abort(404)
+    if request.method == 'PATCH':
+        data = request.get_json(force=True)
+        if not data:
+            abort(406)
+        if 'name' in data:
+            entry['name'] = data['name']
+        if 'description' in data:
+            entry['description'] = data['description']
+        return jsonify(entry), 200
+    elif request.method == 'DELETE':
+        todos.remove(entry)
+        return jsonify({'message': 'Entry deleted'}), 204
 
 if __name__ == '__main__':
     app.debug = True
