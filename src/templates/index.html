@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>toDo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f11;
+      --surface: #1a1a1f;
+      --surface2: #222228;
+      --border: #2e2e38;
+      --accent: #6ee7b7;
+      --accent2: #818cf8;
+      --danger: #f87171;
+      --text: #e8e8f0;
+      --text-muted: #6b6b80;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    header {
+      max-width: 960px;
+      margin: 0 auto 48px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+
+    header span {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .layout {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 62px;
+    }
+
+    .panel-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    .btn {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #0f1a14;
+    }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid transparent;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
+    .btn-danger:hover {
+      border-color: var(--danger);
+      opacity: 1;
+    }
+
+    .list-items { padding: 8px; }
+
+    .list-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.15s;
+      gap: 8px;
+    }
+
+    .list-item:hover { background: var(--surface2); }
+
+    .list-item.active {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+
+    .list-item-name {
+      font-size: 14px;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .entries-panel { min-height: 400px; }
+
+    .entries-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 62px
+    }
+
+    .entries-title h2{    
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    .entries-title span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      color: var(--accent2);
+    }
+
+    .entries-list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+    .entry-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .entry-body { flex: 1; min-width: 0; }
+
+    .entry-name {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .entry-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .entry-id {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 400px;
+      animation: modalIn 0.2s ease;
+    }
+
+
+    .modal h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .field input, .field textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+      resize: none;
+    }
+
+    .field input:focus, .field textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 28px;
+      font-size: 18px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.2s ease;
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .toast.success { border-color: var(--accent); color: var(--accent); }
+    .toast.error   { border-color: var(--danger); color: var(--danger); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>RestAPI - To Do List</h1>
+</header>
+
+<div class="layout">
+
+  <!-- Lists sidebar -->
+  <div class="panel">
+    <div class="panel-header">
+      <h2>Lists</h2>
+      <button class="btn btn-accent" onclick="openModal('list')">+ New</button>
+    </div>
+    <div class="list-items" id="lists-container">
+    </div>
+  </div>
+
+  <!-- Entries panel -->
+  <div class="panel entries-panel">
+    <div class="entries-header">
+      <div class="entries-title" id="entries-title">
+       <h2>Select a list</h2>
+      </div>
+      <button class="btn btn-ghost" id="btn-add-entry" style="display:none" onclick="openModal('entry')">+ Add Entry</button>
+    </div>
+    <div class="entries-list" id="entries-container">
+      <div class="empty-state">Select a list to view entries</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="modal" onclick="closeModalOnBackdrop(event)">
+  <div class="modal">
+    <h3 class="modal-title" id="modal-title">New List</h3>
+    <div id="modal-fields"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-accent" onclick="submitModal()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://127.0.0.1:5000';
+let activeListId = null;
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+function escHtml(str) {
+  return String(str ?? '').replace(/[&<>"]/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])
+  );
+}
+
+async function api(path, method = 'GET', body = null) {
+  const res = await fetch(API + path, {
+    method,
+    headers: body ? { 'Content-Type': 'application/json' } : {},
+    body: body ? JSON.stringify(body) : null
+  });
+  return res.status !== 204 ? res.json() : null;
+}
+
+async function loadLists() {
+  const lists = await api('/lists');
+  document.getElementById('lists-container').innerHTML = lists.length
+    ? lists.map(l => `
+        <div class="list-item ${l.id === activeListId ? 'active' : ''}" onclick="selectList('${l.id}', '${escHtml(l.name)}')">
+          <span class="list-item-name">${escHtml(l.name)}</span>
+          <button class="btn btn-danger" onclick="deleteList(event,'${l.id}')">✕</button>
+        </div>`).join('')
+    : '<div class="empty-state">No lists yet</div>';
+}
+
+async function selectList(id, name) {
+  activeListId = id;
+  document.getElementById('entries-title').innerHTML = `<span>#</span> ${escHtml(name)}`;
+  document.getElementById('btn-add-entry').style.display = '';
+  await Promise.all([loadEntries(id), loadLists()]);
+}
+
+async function deleteList(e, id) {
+  e.stopPropagation();
+  await api(`/todo-list/${id}`, 'DELETE');
+  if (activeListId === id) {
+    activeListId = null;
+    document.getElementById('entries-title').textContent = 'Select a list';
+    document.getElementById('btn-add-entry').style.display = 'none';
+    document.getElementById('entries-container').innerHTML =
+      '<div class="empty-state">Select a list to view entries</div>';
+  }
+  showToast('List deleted');
+  await loadLists();
+}
+
+async function loadEntries(listId) {
+  const entries = await api(`/todo-list/${listId}`);
+  document.getElementById('entries-container').innerHTML = entries.length
+    ? entries.map(e => `
+        <div class="entry-card">
+          <div class="entry-body">
+            <div class="entry-name">${escHtml(e.name)}</div>
+            <div class="entry-desc">${escHtml(e.description) || '—'}</div>
+            <div class="entry-id">${e.id}</div>
+          </div>
+          <button class="btn btn-danger" onclick="deleteEntry('${e.id}')">✕</button>
+        </div>`).join('')
+    : '<div class="empty-state">No entries in this list</div>';
+}
+
+async function deleteEntry(id) {
+  await api(`/entry/${id}`, 'DELETE');
+  showToast('Entry deleted');
+  await loadEntries(activeListId);
+}
+
+function openModal(mode) {
+  document.getElementById('modal-title').textContent = mode === 'list' ? 'New List' : 'New Entry';
+  document.getElementById('modal-fields').innerHTML = `
+    <div class="field"><label>Name</label><input id="f-name" placeholder="${mode === 'list' ? 'Shopping list...' : 'Buy milk...'}"></div>
+    ${mode === 'entry' ? '<div class="field"><br/><label>Description</label><textarea id="f-desc" rows="3" placeholder="Optional details..."></textarea></div>' : ''}`;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal').dataset.mode = mode;
+  setTimeout(() => document.getElementById('f-name')?.focus(), 50);
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function closeModalOnBackdrop(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+async function submitModal() {
+  const name = document.getElementById('f-name')?.value.trim();
+  if (!name) return;
+  const mode = document.getElementById('modal').dataset.mode;
+  if (mode === 'list') {
+    const data = await api('/todo-list', 'POST', { name });
+    closeModal();
+    showToast('List created');
+    await selectList(data.id, data.name);
+  } else {
+    const desc = document.getElementById('f-desc')?.value.trim() || '';
+    await api(`/todo-list/${activeListId}`, 'POST', { name, description: desc });
+    closeModal();
+    showToast('Entry added');
+    await loadEntries(activeListId);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modal').classList.contains('open')) submitModal();
+});
+
+loadLists();
+</script>
+</body>
+</html>
