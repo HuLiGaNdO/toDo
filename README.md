@@ -20,11 +20,17 @@ Method, Endpoint, Description
 
 
 GET /todo-list/{list_id} Get all entries
+
 POST /todo-list/{list_id} Add entry 
+
 DELETE /todo-list/{list_id} Delete a list 
+
 POST /todo-list Create a new list 
+
 PATCH /entry/{entry_id} Update an entry 
+
 DELETE /entry/{entry_id} Delete an entry 
+
 
 # Development part
 
