@@ -4,9 +4,19 @@ Built with Python Flask
 """
 
 import uuid
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, render_template
+
+
+
 
 app = Flask(__name__)
+
+
+# --- Index route ---
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # --- Sample data ---
 
