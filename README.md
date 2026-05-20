@@ -32,6 +32,8 @@ PATCH /entry/{entry_id} Update an entry
 DELETE /entry/{entry_id} Delete an entry 
 
 
-# Development part
+# Development process
 
-Server runs on `http://127.0.0.1:5000` by default.
+Server runs on "http://127.0.0.1:5000" by default.
+
+Configured the static IP address (192.168.24.134) using NetworkManager "nmcli" to ensure the server keeps the same address after reboot.
