@@ -37,3 +37,10 @@ DELETE /entry/{entry_id} Delete an entry
 Server runs on "http://127.0.0.1:5000" by default.
 
 Configured the static IP address (192.168.24.134) using NetworkManager "nmcli" to ensure the server keeps the same address after reboot.
+
+Two local users created:
+
+- willi (standard user without administrative permissions)
+- fernzugriff (SSH administration user with sudo privileges)
+
+SSH access was restricted to the user "fernzugriff" using the "AllowUsers" directive in "sshd_config".
